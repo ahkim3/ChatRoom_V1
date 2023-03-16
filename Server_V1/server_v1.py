@@ -113,6 +113,7 @@ try:
             # Handle logout command
             elif command == "logout":
                 username = logged_in_users[conn]
+                conn.send(b"{username} left.")
                 del logged_in_users[conn]
                 print(username, "logout.")
                 conn.close()
@@ -131,6 +132,5 @@ try:
                 conn.send(b"Invalid command.")
 
 except KeyboardInterrupt:
-    print("\nClosing server...")
     server_socket.close()
     sys.exit()

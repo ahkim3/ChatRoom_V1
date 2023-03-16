@@ -50,7 +50,6 @@ def receive():
     except socket.timeout:
         pass
     except KeyboardInterrupt:
-        print("\nClosing client...")
         client_socket.close()
         sys.exit()
     except socket.error as err:
@@ -137,7 +136,6 @@ def send():
     except socket.timeout:
         pass
     except KeyboardInterrupt:
-        print("\nClosing client...")
         client_socket.close()
         sys.exit()
     except socket.error as err:
@@ -146,7 +144,7 @@ def send():
         sys.exit()
 
 
-print("My Chat room client. Version One.\n")
+print("My chat room client. Version One.\n")
 
 # Start sending and receiving data
 while True:
@@ -158,7 +156,6 @@ while True:
         print("Socket timeout.")
         pass
     except KeyboardInterrupt:
-        print("\nClosing client...")
         client_socket.close()
         sys.exit()
     except socket.error as err:
