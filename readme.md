@@ -11,8 +11,8 @@
 
 ## Instructions:
 
-1. Start the server by running `python /Server_V1/server_v1.py`
-2. Start the client by running `python /Client_V1/client_v1.py`
+1. Start the server by running `python ./Server_V1/server_v1.py`
+2. Start the client by running `python ./Client_V1/client_v1.py`
 
 ---
 
