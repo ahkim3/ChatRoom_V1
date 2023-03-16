@@ -80,11 +80,11 @@ def send():
 
                 # Check if newuser command is used correctly
                 elif data.startswith("newuser"):
-                    username, password = params
-
                     if len(params) != 2:
                         print("Invalid usage. Usage: newuser <username> <password>")
                         return
+
+                    username, password = params
 
                     if len(username) < 3 or len(username) > 32:
                         print(
