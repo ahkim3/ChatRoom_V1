@@ -29,52 +29,120 @@ except:
 
 client_socket.settimeout(1)
 
+# User is not logged in by default
+logged_in = False
+
 
 # Receive data from the server
 def receive():
-    while True:
-        try:
-            data = client_socket.recv(bufsize).decode()
-            if not data:
-                print("Server disconnected.")
-                break
-            print(data)
-        except socket.timeout:
-            pass
-        except KeyboardInterrupt:
-            print("\nClosing client...")
+    try:
+        data = client_socket.recv(bufsize).decode()
+        if not data:
+            print("Server disconnected.")
             client_socket.close()
             sys.exit()
-        except socket.error as err:
-            print("Socket error:", err)
-            client_socket.close()
-            sys.exit()
+
+        if data == b"login confirmed" or data == "login confirmed":
+            global logged_in
+            logged_in = True
+
+        print(data)
+    except socket.timeout:
+        pass
+    except KeyboardInterrupt:
+        print("\nClosing client...")
+        client_socket.close()
+        sys.exit()
+    except socket.error as err:
+        print("Socket error:", err)
+        client_socket.close()
+        sys.exit()
 
 
 # Send data to the server
 def send():
-    while True:
-        try:
-            data = input()
-            client_socket.send(data.encode())
-        except socket.timeout:
-            pass
-        except KeyboardInterrupt:
-            print("\nClosing client...")
-            client_socket.close()
-            sys.exit()
-        except socket.error as err:
-            print("Socket error:", err)
-            client_socket.close()
-            sys.exit()
+    try:
+        # Get user input
+        data = input()
 
+        # If user is not logged in, only allow login and newuser commands
+        if not logged_in:
+            if data.startswith("login") or data.startswith("newuser"):
+                # Parse command and parameters
+                parts = data.split()
+                params = parts[1:]
+
+                # Check if login command is used correctly
+                if data.startswith("login"):
+                    if len(params) != 2:
+                        print("Invalid usage. Usage: login <username> <password>")
+                        return
+
+                # Check if newuser command is used correctly
+                elif data.startswith("newuser"):
+                    username, password = params
+
+                    if len(params) != 2:
+                        print("Invalid usage. Usage: newuser <username> <password>")
+                        return
+
+                    if len(username) < 3 or len(username) > 32:
+                        print(
+                            "Invalid username length (must be between 3 and 32 characters).")
+                        return
+
+                    if len(password) < 4 or len(password) > 8:
+                        print(
+                            "Invalid password length (must be between 4 and 8 characters).")
+                        return
+
+                    if any(c.isspace() for c in username) or any(c.isspace() for c in password):
+                        print("Username and password cannot contain spaces.")
+                        return
+
+                # Valid input; send command to server
+                client_socket.send(data.encode())
+            else:
+                if data.startswith("send") or data.startswith("logout"):
+                    print("Denied. Please login first.")
+                else:
+                    print("Invalid command.")
+        else:
+            # Process user input
+            if data.startswith("send") or data.startswith("logout"):
+                if data.startswith("send"):
+                    client_socket.send(data.encode())
+                elif data.startswith("logout"):
+                    client_socket.send(data.encode())
+                    client_socket.close()
+                    sys.exit()
+            else:
+                if data.startswith("login") or data.startswith("newuser"):
+                    print("Denied. Please logout first.")
+                else:
+                    print("Invalid command.")
+    except socket.timeout:
+        pass
+    except KeyboardInterrupt:
+        print("\nClosing client...")
+        client_socket.close()
+        sys.exit()
+    except socket.error as err:
+        print("Socket error:", err)
+        client_socket.close()
+        sys.exit()
+
+
+print("My Chat room client. Version One.\n")
 
 # Start sending and receiving data
 while True:
     try:
-        receive()
         send()
+        receive()
+
     except socket.timeout:
+        print("Socket timeout.")
         pass
     except KeyboardInterrupt:
         print("\nClosing client...")
