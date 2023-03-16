@@ -44,8 +44,7 @@ def is_logged_in(client):
 def is_valid_credentials(username, password):
     # Grab user credentials from file
     with open(users_file, "r") as f:
-        data = [tuple(line.strip().replace(
-            "(", "").replace(")", "").split(", ")) for line in f]
+        data = [tuple(line.strip().replace("(", "").replace(")", "").split(", ")) for line in f if len(line.strip().split(", ")) == 2]
 
     # Check for a match
     for user, passwd in data:

@@ -11,8 +11,10 @@
 
 ## Instructions:
 
-1. Start the server by running `python ./Server_V1/server_v1.py`
-2. Start the client by running `python ./Client_V1/client_v1.py`
+1. In a terminal instance, first enter into the `Server_V1` directory
+2. Start the server by running `python server_v1.py`
+3. In a new terminal instance, enter into the `Client_V1` directory
+4. Start the client by running `python client_v1.py`
 
 ---
 
