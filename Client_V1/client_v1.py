@@ -65,13 +65,13 @@ def send():
         # Get user input
         data = input()
 
+        # Parse command and parameters
+        parts = data.split()
+        params = parts[1:]
+
         # If user is not logged in, only allow login and newuser commands
         if not logged_in:
             if data.startswith("login") or data.startswith("newuser"):
-                # Parse command and parameters
-                parts = data.split()
-                params = parts[1:]
-
                 # Check if login command is used correctly
                 if data.startswith("login"):
                     if len(params) != 2:
@@ -108,10 +108,23 @@ def send():
                 else:
                     print("Invalid command.")
         else:
-            # Process user input
             if data.startswith("send") or data.startswith("logout"):
+                # Check if send command is used correctly
                 if data.startswith("send"):
+                    message = ' '.join(params)
+
+                    if len(params) <= 0:
+                        print("Invalid usage. Usage: send <message>")
+                        return
+
+                    if len(message) > 256 or len(message) < 1:
+                        print(
+                            "Invalid message length (must be between 1 and 256 characters).")
+                        return
+
                     client_socket.send(data.encode())
+
+                # Check if logout command is used correctly
                 elif data.startswith("logout"):
                     client_socket.send(data.encode())
                     client_socket.close()
